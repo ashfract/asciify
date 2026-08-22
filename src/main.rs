@@ -8,8 +8,24 @@ struct Args {
     #[arg(short = 'W', long)]
     width: u32,
     #[arg(short = 'H', long)]
-    height: u32,
+    height: Option<u32>,
     target: PathBuf,
 }
 
-fn main() {}
+fn main() {
+    let args = Args::parse();
+}
+
+mod tests {
+    use super::*;
+
+    #[test]
+    fn parse_args() {
+        let args = Args::parse_from(["ascii_art_generator", "-W", "100", "-H", "50", "image.png"]);
+        println!("{:?}", args);
+
+        assert_eq!(args.width, 100);
+        assert_eq!(args.height, Some(50));
+        assert_eq!(args.target, PathBuf::from("image.png"));
+    }
+}
