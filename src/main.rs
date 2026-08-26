@@ -1,4 +1,5 @@
 use clap::Parser;
+use image::{self, GenericImageView};
 use std::path::PathBuf;
 
 /// Lightweight image to ASCII art conversion tool
@@ -14,6 +15,12 @@ struct Args {
 
 fn main() {
     let args = Args::parse();
+}
+
+fn fetch_image(args: Args) -> Result<image::GrayImage, Box<dyn std::error::Error>> {
+    let img = image::ImageReader::open(args.target)?.decode()?;
+    let grey = img.to_luma8();
+    Ok(grey)
 }
 
 mod tests {
