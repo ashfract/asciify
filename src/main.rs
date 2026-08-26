@@ -19,20 +19,42 @@ fn main() {
 
 fn fetch_image(args: Args) -> Result<image::GrayImage, Box<dyn std::error::Error>> {
     let img = image::ImageReader::open(args.target)?.decode()?;
-    let grey = img.to_luma8();
-    Ok(grey)
+    let gray = img.to_luma8();
+    Ok(gray)
 }
 
+#[cfg(test)]
 mod tests {
     use super::*;
 
     #[test]
-    fn parse_args() {
-        let args = Args::parse_from(["ascii_art_generator", "-W", "100", "-H", "50", "image.png"]);
+    fn parse_format_test() {
+        let args = Args::parse_from(["ascii_art_generator", "-W", "256", "-H", "256", "image.png"]);
         println!("{:?}", args);
 
-        assert_eq!(args.width, 100);
-        assert_eq!(args.height, Some(50));
+        assert_eq!(args.width, 256);
+        assert_eq!(args.height, Some(256));
         assert_eq!(args.target, PathBuf::from("image.png"));
+    }
+
+    #[test]
+    fn fetch_image_test() {
+        let args = Args::parse_from([
+            "ascii_art_generator",
+            "-W",
+            "256",
+            "-H",
+            "256",
+            "/home/callum/dev/ascii_art_generator/tests/fixtures/sample1.png",
+        ]);
+        let gray_img = fetch_image(args).unwrap();
+        let raw = gray_img.into_raw();
+
+        assert_eq!(
+            raw,
+            Vec::from([
+                0, 0, 255, 255, 0, 0, 255, 255, 0, 0, 255, 255, 0, 0, 255, 255
+            ])
+        );
     }
 }
