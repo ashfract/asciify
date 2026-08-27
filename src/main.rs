@@ -37,7 +37,7 @@ mod tests {
         let args = Args::parse_from(["ascii_art_generator", "-W", "256", "-H", "256", "image.png"]);
         println!("{:?}", args);
 
-        assert_eq!(args.width, 256);
+        assert_eq!(args.width, Some(256));
         assert_eq!(args.height, Some(256));
         assert_eq!(args.target, PathBuf::from("image.png"));
     }
