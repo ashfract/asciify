@@ -23,6 +23,11 @@ fn fetch_image(args: Args) -> Result<image::GrayImage, Box<dyn std::error::Error
     Ok(gray)
 }
 
+fn calculate_aspect_ratio(width: u32, height: u32) -> f32 {
+    let ratio = height as f32 / width as f32;
+    ratio
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
