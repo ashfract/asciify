@@ -13,6 +13,11 @@ struct Args {
     target: PathBuf,
 }
 
+struct AsciiDimensions {
+    width: u32,
+    height: u32,
+}
+
 fn main() {
     let args = Args::parse();
 }
@@ -26,6 +31,32 @@ fn fetch_image(args: Args) -> Result<image::GrayImage, Box<dyn std::error::Error
 fn calculate_aspect_ratio(width: u32, height: u32) -> f32 {
     let ratio = height as f32 / width as f32;
     ratio
+}
+
+fn calculate_ascii_dimensions(
+    args: Args,
+    img_width: u32,
+    img_height: u32,
+) -> Result<AsciiDimensions, Box<dyn std::error::Error>> {
+    match (args.width, args.height) {
+        (Some(w), Some(h)) => Ok(AsciiDimensions {
+            width: w,
+            height: h,
+        }),
+        (None, None) => {
+            // defaults
+            const PIXEL_WIDTH_PER_CHAR: u32 = 8;
+            const PIXEL_HEIGHT_PER_CHAR: u32 = 16;
+
+            let ascii_width = img_width / PIXEL_WIDTH_PER_CHAR;
+            let ascii_height = img_height / PIXEL_HEIGHT_PER_CHAR;
+            Ok(AsciiDimensions {
+                width: ascii_width,
+                height: ascii_height,
+            })
+        }
+        (Some(_), None) | (None, Some(_)) => Err("Mismatched arguments provided".into()),
+    }
 }
 
 #[cfg(test)]
