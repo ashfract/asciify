@@ -7,7 +7,7 @@ use std::path::PathBuf;
 #[command(name = "ascii_art_generator", version, about)]
 struct Args {
     #[arg(short = 'W', long)]
-    width: u32,
+    width: Option<u32>,
     #[arg(short = 'H', long)]
     height: Option<u32>,
     target: PathBuf,
