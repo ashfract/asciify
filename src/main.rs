@@ -22,12 +22,14 @@ fn main() {
     let args = Args::parse();
 }
 
+// Returns GrayImage based on the provided target image
 fn fetch_image(args: Args) -> Result<image::GrayImage, Box<dyn std::error::Error>> {
     let img = image::ImageReader::open(args.target)?.decode()?;
     let gray = img.to_luma8();
     Ok(gray)
 }
 
+// Returns target dimensions for ASCII art based on aspect ratio of given image unless specific target dimensions are specified
 fn calculate_ascii_dimensions(
     args: Args,
     img_width: u32,
