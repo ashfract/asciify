@@ -56,6 +56,31 @@ fn calculate_ascii_dimensions(
     }
 }
 
+fn sample_image(img: image::GrayImage, ascii_dimensions: AsciiDimensions) -> Vec<u8> {
+    let ascii_w = ascii_dimensions.width;
+    let ascii_h = ascii_dimensions.height;
+
+    let (img_w, img_h) = img.dimensions();
+
+    let mut raw_ascii_chroma: Vec<u8> = Vec::with_capacity(ascii_w as usize * ascii_h as usize);
+
+    for grid_y in 0..ascii_h {
+        let y_start = grid_y * img_h / ascii_h; // start pixel index for cell on y axis
+        let y_end = (grid_y + 1) * img_h / ascii_h; // end pixel index for cell on y axis
+        let centre_y = (y_start + (y_end - y_start) / 2).min(img_h.saturating_sub(1));
+
+        for grid_x in 0..ascii_w {
+            let x_start = grid_x * img_w / ascii_w;
+            let x_end = (grid_x + 1) * img_w / ascii_w;
+            let centre_x = (x_start + (x_end - x_start) / 2).min(img_w.saturating_sub(1));
+
+            raw_ascii_chroma.push(img.get_pixel(centre_x, centre_y).0[0]);
+        }
+    }
+
+    raw_ascii_chroma
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
