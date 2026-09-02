@@ -81,6 +81,13 @@ fn sample_image(img: image::GrayImage, ascii_dimensions: AsciiDimensions) -> Vec
     raw_ascii_chroma
 }
 
+fn brightness_to_char(brightness: u8) -> char {
+    const CHARSET: &[char] = &['@', '%', '#', '*', '+', '=', '-', ':', '.', ' '];
+    let bucket_width = 256 / CHARSET.len();
+    let index = (brightness as usize / bucket_width).min(CHARSET.len() - 1);
+    CHARSET[index]
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
