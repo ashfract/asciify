@@ -88,6 +88,21 @@ fn brightness_to_char(brightness: u8) -> char {
     CHARSET[index]
 }
 
+fn convert_to_ascii(luma_values: Vec<u8>, ascii_dimensions: AsciiDimensions) -> Vec<char> {
+    let chars: Vec<char> = luma_values
+        .into_iter()
+        .map(|brightness| brightness_to_char(brightness))
+        .collect();
+    let mut result: Vec<char> = Vec::new();
+    for (index, char) in chars.into_iter().enumerate() {
+        if index > 0 && index % ascii_dimensions.width as usize == 0 {
+            result.push('\n');
+        }
+        result.push(char);
+    }
+    result
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
