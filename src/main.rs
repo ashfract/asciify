@@ -3,7 +3,7 @@ use image::{self, GenericImageView};
 use std::path::PathBuf;
 
 /// Lightweight image to ASCII art conversion tool
-#[derive(Parser, Debug)]
+#[derive(Parser, Debug, Clone)]
 #[command(name = "ascii_art_generator", version, about)]
 struct Args {
     #[arg(short = 'W', long)]
@@ -13,13 +13,23 @@ struct Args {
     target: PathBuf,
 }
 
+#[derive(Clone)]
 struct AsciiDimensions {
     width: u32,
     height: u32,
 }
 
-fn main() {
+fn main() -> Result<(), Box<dyn std::error::Error>> {
     let args = Args::parse();
+    let image = fetch_image(args.clone())?;
+    let ascii_dimensions = calculate_ascii_dimensions(args.clone(), image.width(), image.height())?;
+    let samples = sample_image(image, ascii_dimensions.clone());
+    let ascii = convert_to_ascii(samples, ascii_dimensions);
+
+    let result: String = ascii.iter().collect();
+    println!("{}", result);
+
+    Ok(())
 }
 
 // Returns GrayImage based on the provided target image
