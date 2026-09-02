@@ -139,4 +139,13 @@ mod tests {
 
         assert_eq!(samples, expected);
     }
+    #[test]
+    fn brightness_to_char_test() {
+        assert_eq!(brightness_to_char(0), '@');
+        assert_eq!(brightness_to_char(24), '@');
+        assert_eq!(brightness_to_char(25), '%');
+        assert_eq!(brightness_to_char(26), '%');
+        assert_eq!(brightness_to_char(250), ' ');
+        assert_eq!(brightness_to_char(255), ' ');
+    }
 }
