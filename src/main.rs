@@ -99,10 +99,6 @@ mod tests {
     fn fetch_image_test() {
         let args = Args::parse_from([
             "ascii_art_generator",
-            "-W",
-            "256",
-            "-H",
-            "256",
             "/home/callum/dev/ascii_art_generator/tests/fixtures/sample1.png",
         ]);
         let gray_img = fetch_image(args).unwrap();
@@ -114,5 +110,26 @@ mod tests {
                 0, 0, 255, 255, 0, 0, 255, 255, 0, 0, 255, 255, 0, 0, 255, 255
             ])
         );
+    }
+    #[test]
+    fn sample_image_test() {
+        let img = image::GrayImage::from_fn(256, 256, |x, y| {
+            if x < 128 {
+                image::Luma([0u8])
+            } else {
+                image::Luma([255u8])
+            }
+        });
+        let dimensions = AsciiDimensions {
+            width: 32,
+            height: 16,
+        };
+        let samples = sample_image(img, dimensions);
+
+        let mut row = vec![0u8; 16];
+        row.extend(vec![255u8; 16]);
+        let expected = row.repeat(16);
+
+        assert_eq!(samples, expected);
     }
 }
