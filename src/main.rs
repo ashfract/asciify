@@ -163,4 +163,24 @@ mod tests {
         assert_eq!(brightness_to_char(250), ' ');
         assert_eq!(brightness_to_char(255), ' ');
     }
+    #[test]
+    fn convert_to_ascii_test() {
+        let ascii_dimensions = AsciiDimensions {
+            width: 32,
+            height: 16,
+        };
+        let mut row = vec![0u8; 16];
+        row.extend(vec![255u8; 16]);
+        let luma = row.repeat(16);
+
+        let result = convert_to_ascii(luma, ascii_dimensions);
+
+        let mut row = vec!['@'; 16];
+        row.extend(vec![' '; 16]);
+        row.extend(vec!['\n']);
+        let mut expected = row.repeat(16);
+        expected.pop();
+
+        assert_eq!(result, expected);
+    }
 }
