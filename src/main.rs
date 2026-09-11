@@ -54,9 +54,16 @@ fn calculate_ascii_dimensions(
             // defaults
             const PIXEL_WIDTH_PER_CHAR: u32 = 8;
             const PIXEL_HEIGHT_PER_CHAR: u32 = 16;
+            const MAX_ASCII_WIDTH: u32 = 100;
 
-            let ascii_width = img_width / PIXEL_WIDTH_PER_CHAR;
-            let ascii_height = img_height / PIXEL_HEIGHT_PER_CHAR;
+            let mut ascii_width = img_width / PIXEL_WIDTH_PER_CHAR;
+            let mut ascii_height = img_height / PIXEL_HEIGHT_PER_CHAR;
+            if ascii_width > MAX_ASCII_WIDTH {
+                let scale_factor: f32 = MAX_ASCII_WIDTH as f32 / ascii_width as f32;
+                ascii_height = (ascii_height as f32 * scale_factor) as u32;
+                ascii_width = (ascii_width as f32 * scale_factor) as u32;
+            }
+
             Ok(AsciiDimensions {
                 width: ascii_width,
                 height: ascii_height,
